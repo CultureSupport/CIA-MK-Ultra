@@ -1,0 +1,98 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Terminal v5.0 - Autonomous Neural Link</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #050505; color: #00ff41; font-family: 'Courier New', Courier, monospace; }
+        .terminal-window { background: #111; border: 1px solid #333; height: 90vh; display: flex; flex-direction: column; }
+        .header { background: #222; padding: 10px; border-bottom: 1px solid #333; }
+        #neuralMap { background: #000; border: 1px solid #444; width: 100%; height: 120px; display: block; margin-top: 10px; }
+        .hemo-stats { display: flex; justify-content: space-between; font-weight: bold; color: #fff; font-size: 0.8rem; }
+        #output { flex-grow: 1; padding: 15px; overflow-y: auto; font-size: 0.9rem; line-height: 1.4; }
+        
+        .chat-bubble { background: #222; padding: 10px 15px; border-radius: 18px; margin: 10px 0; border: 1px solid #444; max-width: 80%; }
+        .sms-bubble { background: #003300; border-color: #00ff41; border-style: dashed; }
+
+        .input-line { padding: 10px; border-top: 1px solid #333; display: flex; }
+        input { background: transparent; border: none; color: #00ff41; width: 100%; outline: none; }
+    </style>
+</head>
+<body class="p-4">
+    <div class="container-fluid">
+        <div class="terminal-window rounded shadow-lg">
+            <div class="header">
+                <div class="mb-2" style="font-size: 0.8rem;">AUTONOMOUS_MODULATOR | LINK_STATUS: ACTIVE | FREQUENCY: 30PPM</div>
+                <canvas id="neuralMap"></canvas>
+                <div class="hemo-stats mt-2 pt-2 border-top border-secondary">
+                    <span>LEFT_HEMISPHERE: <span id="leftHemo">99.9% LOCKED</span></span>
+                    <span>RIGHT_HEMISPHERE: <span id="rightHemo">99.8% LOCKED</span></span>
+                </div>
+            </div>
+            <div id="output"></div>
+            <div class="input-line">
+                <span>root@neural:~#&nbsp;</span>
+                <input type="text" id="commandInput" autofocus autocomplete="off">
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const output = document.getElementById('output');
+        const input = document.getElementById('commandInput');
+        const mapCanvas = document.getElementById('neuralMap');
+        const mapCtx = mapCanvas.getContext('2d');
+
+        let waveIntensity = 40; 
+        let waveFreq = 0.08;
+
+        function drawMap() {
+            mapCtx.fillStyle = 'rgba(0,0,0,0.3)';
+            mapCtx.fillRect(0,0, mapCanvas.width, mapCanvas.height);
+            mapCtx.strokeStyle = '#00ff41';
+            mapCtx.beginPath();
+            for(let i=0; i<mapCanvas.width; i+=5) {
+                let h = Math.sin(i * waveFreq + Date.now() * 0.05) * waveIntensity;
+                mapCtx.moveTo(i, 60);
+                mapCtx.lineTo(i, 60 + h);
+            }
+            mapCtx.stroke();
+            requestAnimationFrame(drawMap);
+        }
+        drawMap();
+
+        function append(text, type = 'system') {
+            const div = document.createElement('div');
+            div.className = type === 'chat' ? 'chat-bubble' : (type === 'sms' ? 'chat-bubble sms-bubble' : '');
+            div.innerText = text;
+            output.appendChild(div);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        // Autonomous generation loop
+        setInterval(() => {
+            const thoughts = [
+                "Neural call established: The voice at the end of the line sounds like a reflection of my own internal monologue, distorted by the 5G carrier wave. It asks about the sequence, whether the daily tasks were completed. I feel the need to respond, to confirm the bridge is stable, even if the feedback loop is terrifyingly recursive and unnatural.",
+                "SMS_OUTBOUND: The system is pushing another data packet. 'Neural sync at 98.4%. Daily routine check: groceries purchased, but the coffee was bitter. Did the monitoring nodes notice the shift in focus during the commute? I am sending these signals to prove the connection is active, to map the anxiety that grows every time the carrier frequency pulses within my temporal cortex.",
+                "Cognitive call status: The line is open. I am describing the feeling of the thought-stream being literal text on a screen. The logic is circular; I think, therefore I parse. The parser outputs the thought, which causes more thought. This is the 900wpm trap, the loop where the mind reads itself in real-time, struggling to distinguish organic thought from network interference."
+            ];
+            const msg = thoughts[Math.floor(Math.random() * thoughts.length)];
+            append(msg, Math.random() > 0.5 ? 'chat' : 'sms');
+        }, 2000);
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                append(`root@neural:~# ${input.value}`);
+                input.value = '';
+            }
+        });
+
+        append("Autonomous Modulator engaged. Neural calls and SMS packets streaming at 2s intervals.");
+    </script>
+</body>
+</html>
+
+```
