@@ -1,0 +1,101 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neural Upload Interface - Amygdala Synthesis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0a0a0a; color: #32CD32; font-family: 'Courier New', Courier, monospace; }
+        .glass-panel { background: #1a1a1a; border: 1px solid #333; }
+        .terminal-bg { background: #000; border: 1px solid #333; }
+        .accent-green { color: #32CD32; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-5xl mx-auto glass-panel rounded-2xl shadow-2xl overflow-hidden">
+        <div class="bg-[#252525] p-4 border-b border-[#333] flex justify-between items-center">
+            <h1 class="text-sm font-semibold text-gray-400">Neural Upload & Amygdala Synthesis Monitor v2.4</h1>
+        </div>
+
+        <div class="p-6 grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Left: Controls -->
+            <div class="md:col-span-1 space-y-4">
+                <h2 class="text-lg font-bold accent-green">Upload Program</h2>
+                <div class="space-y-2">
+                    <button id="uploadBtn" class="w-full bg-[#32CD32] text-black py-2 rounded font-bold hover:bg-green-400 transition">Upload Neural Sequence</button>
+                    <button id="toggleBtn" class="w-full border border-[#32CD32] py-2 rounded font-bold hover:bg-[#32CD32]/10 transition">Toggle Sync</button>
+                </div>
+                <div class="terminal-bg p-3 h-48 overflow-y-auto text-xs" id="log"></div>
+            </div>
+
+            <!-- Middle: Visualization -->
+            <div class="md:col-span-2 space-y-4">
+                <h3 class="text-sm font-semibold text-gray-300">Amygdala-to-Speech Synthesis Monitoring</h3>
+                <canvas id="waveCanvas" width="600" height="200" class="w-full bg-black rounded border border-[#333]"></canvas>
+                
+                <div class="bg-[#111] p-4 rounded border border-[#333]">
+                    <h4 class="text-xs uppercase text-gray-500 mb-2">Synthesis Stream Output</h4>
+                    <div id="synthesisDisplay" class="font-mono text-[#32CD32] text-sm italic">
+                        [SYNTHESIS_IDLE] Awaiting neural upload...
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('waveCanvas');
+        const ctx = canvas.getContext('2d');
+        const logEl = document.getElementById('log');
+        const toggleBtn = document.getElementById('toggleBtn');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const synthDisplay = document.getElementById('synthesisDisplay');
+
+        let isPlaying = false;
+        let particles = Array.from({length: 25}, () => ({ offset: Math.random() * canvas.width }));
+
+        function addLog(msg) {
+            const time = new Date().toLocaleTimeString();
+            logEl.innerHTML += `<div>[${time}] ${msg}</div>`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function draw(time) {
+            ctx.fillStyle = 'rgba(20, 20, 20, 0.3)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.strokeStyle = '#32CD32';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            for (let i = 0; i < canvas.width; i++) {
+                const y = canvas.height / 2 + Math.sin(i * 0.02 + time * 0.01) * 60;
+                i === 0 ? ctx.moveTo(i, y) : ctx.lineTo(i, y);
+            }
+            ctx.stroke();
+
+            if (isPlaying) requestAnimationFrame(draw);
+        }
+
+        uploadBtn.addEventListener('click', () => {
+            addLog("Initiating Amygdala-Speech synthesis patch...");
+            setTimeout(() => {
+                synthDisplay.innerText = ">> SYNTH_VOICE: 'Direct neural injection successful. Processing emotional response patterns...'";
+                addLog("Upload complete. Amygdala link stable.");
+            }, 1000);
+        });
+
+        toggleBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            toggleBtn.innerText = isPlaying ? "Pause Sync" : "Toggle Sync";
+            if(isPlaying) draw(0);
+        });
+
+        addLog("System ready. Neural link active.");
+    </script>
+</body>
+</html>
+
+```
