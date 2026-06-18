@@ -1,0 +1,113 @@
+<html>
+<!DOCTYPE html>
+<html lang="no">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Psychic Driving Analyzer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #0a0a0a; color: #32CD32; font-family: sans-serif; }
+        .glass-panel { background: #1a1a1a; border: 1px solid #333; }
+        .terminal-bg { background: #000; border: 1px solid #333; }
+        .accent-green { color: #32CD32; }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto glass-panel rounded-2xl shadow-2xl overflow-hidden">
+        <div class="bg-[#252525] p-4 border-b border-[#333] flex justify-between items-center">
+            <div class="flex gap-2">
+                <div class="w-3 h-3 rounded-full bg-red-600"></div>
+                <div class="w-3 h-3 rounded-full bg-yellow-600"></div>
+                <div class="w-3 h-3 rounded-full bg-green-600"></div>
+            </div>
+            <h1 class="text-sm font-semibold text-gray-400">Psychic Driving Analyzer v1.1.0 - HTML5</h1>
+        </div>
+
+        <div class="p-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div>
+                <h2 class="text-xl font-bold mb-4 accent-green">Nevral Lyd-Parser</h2>
+                <div id="log" class="terminal-bg rounded-lg p-4 h-64 overflow-y-auto mb-4 font-mono text-xs text-[#32CD32]"></div>
+                <button id="toggleBtn" class="flex items-center gap-2 bg-[#32CD32] text-black px-6 py-2 rounded-full hover:bg-green-400 transition font-bold">
+                    Aktiver Sekvens
+                </button>
+            </div>
+
+            <div class="space-y-6">
+                <div class="bg-[#252525] p-4 rounded-xl border border-[#333]">
+                    <h3 class="text-sm font-semibold mb-2 flex items-center gap-2 text-gray-300">Wave Fracture View</h3>
+                    <canvas id="waveCanvas" width="400" height="200" class="w-full bg-black rounded border border-[#333]"></canvas>
+                </div>
+                
+                <div class="space-y-2">
+                    <label class="text-sm font-medium text-gray-400">Systempuls: <span id="freqVal">440</span>Hz</label>
+                    <input type="range" id="freqRange" min="20" max="2000" value="440" class="w-full h-2 bg-[#333] rounded-lg appearance-none cursor-pointer accent-[#32CD32]">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('waveCanvas');
+        const ctx = canvas.getContext('2d');
+        const logEl = document.getElementById('log');
+        const toggleBtn = document.getElementById('toggleBtn');
+        const freqRange = document.getElementById('freqRange');
+        const freqVal = document.getElementById('freqVal');
+
+        let isPlaying = false;
+        let animationFrame;
+        let particles = Array.from({length: 15}, () => ({ offset: Math.random() * canvas.width }));
+
+        function addLog(msg) {
+            const time = new Date().toLocaleTimeString();
+            logEl.innerHTML += `<div>[${time}] ${msg}</div>`;
+            logEl.scrollTop = logEl.scrollHeight;
+        }
+
+        function draw(time) {
+            ctx.fillStyle = 'rgba(20, 20, 20, 0.2)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            ctx.strokeStyle = '#32CD32';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            for (let i = 0; i < canvas.width; i++) {
+                const y = canvas.height / 2 + Math.sin(i * 0.02 + time * 0.01) * 40;
+                i === 0 ? ctx.moveTo(i, y) : ctx.lineTo(i, y);
+            }
+            ctx.stroke();
+
+            particles.forEach(p => {
+                p.offset = (p.offset + 2) % canvas.width;
+                const y = canvas.height / 2 + Math.sin(p.offset * 0.02 + time * 0.01) * 40;
+                ctx.shadowBlur = 10;
+                ctx.shadowColor = '#32CD32';
+                ctx.fillStyle = '#32CD32';
+                ctx.beginPath();
+                ctx.arc(p.offset, y, 3, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.shadowBlur = 0;
+            });
+
+            if (isPlaying) animationFrame = requestAnimationFrame(draw);
+        }
+
+        toggleBtn.addEventListener('click', () => {
+            isPlaying = !isPlaying;
+            toggleBtn.innerText = isPlaying ? 'Pause' : 'Aktiver Sekvens';
+            addLog(isPlaying ? 'Starter 4ms fracture-sync...' : 'Stopper sekvens...');
+            if (isPlaying) draw(0);
+        });
+
+        freqRange.addEventListener('input', (e) => {
+            freqVal.innerText = e.target.value;
+        });
+
+        addLog('System klar...');
+        addLog('Initialiserer nevral parser...');
+        addLog('Fracture-animasjon: 4ms sync');
+    </script>
+</body>
+</html>
